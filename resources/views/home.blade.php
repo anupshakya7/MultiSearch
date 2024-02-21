@@ -22,7 +22,7 @@
                             $country = Illuminate\Support\Facades\DB::table('countries')->select('id','name')->get();
                         ?>
                         <label for="country">Country</label>
-                        <select class="form-select" name="country">
+                        <select class="form-select" id="country" name="country">
                             <option value="">Select Country</option>
                             @foreach($country as $countries)
                             <option value="{{$countries->id}}">{{$countries->name}}</option>
@@ -34,7 +34,7 @@
                             $institute = App\Models\Institute::all();
                         ?>
                         <label for="institute">Institute</label>
-                        <select class="form-select" name="institute">
+                        <select class="form-select" id="institute" name="institute">
                             <option value="">Select Institute</option>
                             @foreach($institute as $institutes)
                             <option value="{{$institutes->id}}">{{$institutes->university}}</option>
@@ -46,7 +46,7 @@
                             $level = App\Models\StudyLevel::all();
                         ?>
                         <label for="country">Study Level</label>
-                        <select class="form-select" name="level">
+                        <select class="form-select" id="level" name="level">
                             <option value="">Select Study Level</option>
                             @foreach($level as $levels)
                             <option value="{{$levels->id}}">{{$levels->name}}</option>
@@ -58,7 +58,7 @@
                             $course = App\Models\Course::all();
                         ?>
                         <label for="country">Course</label>
-                        <select class="form-select" name="course">
+                        <select class="form-select" id="course" name="course">
                             <option value="">Select Course</option>
                             @foreach($course as $courses)
                             <option value="{{$courses->id}}">{{$courses->name}}</option>
@@ -79,6 +79,66 @@
     </script>
     <script>
         $(document).ready(function(){
+            $('#country').change(function(){
+                let country_id = $('#country').val();
+                if(country_id != null){
+                    $.ajax({
+                        url:'/dropdown/country/'+country_id,
+                        type:'GET',
+                        dataType:'json',
+                        success: function(response){
+                            if(response.status == 200){
+                                console.log(response);
+                                $('#institute').html('');
+                                $('#level').html('');
+                                $('#course').html('');
+                                $('#institute').append('<option value="">Select Institute</option>');
+                                $('#level').append('<option value="">Select Study Level</option>');
+                                $('#course').append('<option value="">Select Course</option>');
+                                $.each(response.institute,function(key,item){
+                                    $('#institute').append('<option value="'+item.id+'">'+item.university+'</option>')
+                                });
+                                $.each(response.study_level,function(key,item){
+                                    $('#level').append('<option value="'+item.id+'">'+item.name+'</option>')
+                                });
+                                $.each(response.course,function(key,item){
+                                    $('#course').append('<option value="'+item.id+'">'+item.name+'</option>')
+                                });
+                            }
+                        },
+                    })
+                }
+            });
+
+            $('#institute').change(function(){
+                let institute_id = $('#institute').val();
+                let country = $('#country').val();
+                let course = $('#course').val();
+                let level = $('#level').val();
+                if(institute_id != null){
+                    $.ajax({
+                        url:'/dropdown/institute/'+institute_id,
+                        type:'GET',
+                        dataType:'json',
+                        success: function(response){
+                            if(response.status == 200){
+                                console.log(response);
+                                $('#country').val(response.country.id);
+                                $('#course').html('');
+                                $('#level').html('');
+                                $('#course').append('<option value="">Select Course</option>');
+                                $('#level').append('<option value="">Select Study Level</option>');
+                                $.each(response.course,function(key,item){
+                                    $('#course').append('<option value="'+item.id+'">'+item.name+'</option>')
+                                });
+                                $.each(response.study_level,function(key,item){
+                                    $('#level').append('<option value="'+item.id+'">'+item.name+'</option>')
+                                });
+                            }
+                        },
+                    })
+                }
+            });
             
         })
     </script>

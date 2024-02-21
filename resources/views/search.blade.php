@@ -22,7 +22,7 @@
                             $country = Illuminate\Support\Facades\DB::table('countries')->select('id','name')->get();
                         ?>
                         <label for="country">Country</label>
-                        <select class="form-select">
+                        <select class="form-select" id="country">
                             <option value="">Select Country</option>
                             @foreach($country as $countries)
                             <option value="{{$countries->id}}">{{$countries->name}}</option>

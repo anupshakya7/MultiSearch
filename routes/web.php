@@ -23,8 +23,10 @@ Route::get('/', [HomeController::class,'index'])->name('home');
 Route::get('/search', [HomeController::class,'search'])->name('search');
 Route::prefix('dropdown')->group(function () {
     Route::get('country/{id}', [DropdownController::class,'country'])->name('country');
+    Route::get('institute/{id}',[DropdownController::class,'institute'])->name('institute');
+    Route::get('level/{id}',[DropdownController::class,'level'])->name('level');
+    Route::get('course/{id}',[DropdownController::class,'course'])->name('course');
 });
-
 
 Route::get('/create-country',function(){
     Country::create([
